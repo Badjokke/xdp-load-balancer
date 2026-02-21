@@ -2,9 +2,10 @@
 #![no_main]
 
 use core::mem;
-
 use aya_ebpf::{bindings::xdp_action, macros::xdp, programs::XdpContext};
 use aya_log_ebpf::info;
+mod util;
+use util::EthHeader;
 
 #[inline(always)]
 fn ptr_at<T>(ctx: &XdpContext, offset: usize) -> Result<*const T, ()>{
@@ -26,9 +27,12 @@ pub fn ebf_test(ctx: XdpContext) -> u32 {
     }
 }
 
-fn try_ebf_test(ctx: XdpContext) -> Result<u32, u32> {
+fn try_ebf_test(ctx: XdpContext) -> Result<u32, ()> {
     info!(&ctx, "received a packet");
-    //let header: *const usize = ptr_at(&ctx, 32).unwrap();
+    let eth_header: *const EthHeader = ptr_at(&ctx, 0)?;
+    let ip_version: u16 = unsafe{(*eth_header).ether_type};
+    info!(&ctx, "protocol version: {}", ip_version);
+    info!(&ctx, "protocol version: {}", 0x0800_u16.to_be());
     Ok(xdp_action::XDP_PASS)
 }
 
