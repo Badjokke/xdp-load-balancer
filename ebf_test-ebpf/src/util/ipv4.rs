@@ -10,10 +10,18 @@ pub struct Ipv4Header {
     pub source_address: u32,
     pub destination_address: u32,
 }
-
+pub const IPV4_HDR_LEN: usize = 20;
 impl Ipv4Header {
     pub fn get_version(&self) -> u8 {
-        self.version_ihl & 0xF << 4
+        (self.version_ihl >> 4) & 0xF
+    }
+
+    pub fn get_dscp(&self) -> u8 {
+        (self.dscp_ecn >> 2) & 0x3F
+    }
+
+    pub fn get_ecn(&self) -> u8 {
+        self.dscp_ecn & 0x03
     }
 
     pub fn get_ihl(&self) -> u8 {
@@ -35,7 +43,7 @@ impl Ipv4Header {
 
 #[repr(u8)]
 pub enum IpVersion {
-    Ipv4Version = 0x40_u8.to_be(),
+    Ipv4Version = 0x04_u8,
 }
 
 #[repr(u8)]
