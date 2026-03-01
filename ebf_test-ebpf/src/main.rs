@@ -20,14 +20,14 @@ fn ptr_at<T>(ctx: &XdpContext, offset: usize) -> Result<*mut T, ()>{
 }
 
 #[xdp]
-pub fn ebf_test(ctx: XdpContext) -> u32 {
-    match try_ebf_test(ctx) {
+pub fn forward(ctx: XdpContext) -> u32 {
+    match try_forward(ctx) {
         Ok(ret) => ret,
         Err(_) => xdp_action::XDP_ABORTED,
     }
 }
 
-fn try_ebf_test(ctx: XdpContext) -> Result<u32, ()> {
+fn try_forward(ctx: XdpContext) -> Result<u32, ()> {
     info!(&ctx, "received a packet");
     let eth_header: *mut EthHeader = ptr_at(&ctx, 0)?;
     let ip_version: u16 = unsafe{(*eth_header).ether_type};
@@ -45,4 +45,4 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 
 #[unsafe(link_section = "license")]
 #[unsafe(no_mangle)]
-static LICENSE: [u8; 13] = *b"Dual MIT/GPL\0";
+static LICENSE: [u8; 4] = *b"MIT\0";
