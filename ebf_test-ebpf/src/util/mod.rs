@@ -1,2 +1,4 @@
 mod eth_header;
-pub use eth_header::{EthHeader, EthType};
+mod ipv4;
+pub use eth_header::{EthHeader, EthType, ETH_HDR_LEN};
+pub use ipv4::{IpProtocol, IpVersion, Ipv4Header};

@@ -12,4 +12,4 @@ pub enum EthType {
     IPv6 = 0x86DD_u16.to_be(),
 }
 
-pub const EthHdrLen: u16 = 14;
+pub const ETH_HDR_LEN: usize = 14;
